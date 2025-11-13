@@ -809,51 +809,65 @@ function TrustlessManifestoTabContent() {
                       textDecoration: "none",
                     }}
                   >
-                    {isSharePending ? "Opening cast composer..." : "Share Your Pledge"}
+                    {isSharePending
+                      ? "Opening cast composer..."
+                      : "Share Your Pledge"}
                   </button>
                 ) : (
                   // Sign button
-                  <button
-                    onClick={handleSign}
-                    disabled={
-                      isSigningPending || isWaitingForTx || isSimulating
-                    }
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: "100%",
-                      padding: "12px 24px",
-                      marginTop: "16px",
-                      fontSize: "14px",
-                      fontWeight: "600",
-                      letterSpacing: "0.03em",
-                      border: "2px solid rgba(255, 215, 64, 0.7)",
-                      borderRadius: "999px",
-                      background:
-                        "linear-gradient(135deg, rgba(255, 215, 64, 0.95), rgba(255, 170, 51, 0.85))",
-                      color: "#1b1300",
-                      cursor:
+                  <div>
+                    <button
+                      onClick={handleSign}
+                      disabled={
                         isSigningPending || isWaitingForTx || isSimulating
-                          ? "not-allowed"
-                          : "pointer",
-                      opacity:
-                        isSigningPending || isWaitingForTx || isSimulating
-                          ? 0.6
-                          : 1,
-                      transition:
-                        "transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease, opacity 0.2s ease",
-                      textDecoration: "none",
-                    }}
-                  >
-                    {isSimulating
-                      ? "Checking transaction..."
-                      : isWaitingForTx
-                      ? "Confirming pledge..."
-                      : isSigningPending
-                      ? "Waiting for wallet..."
-                      : "Sign the Trustless Manifesto Pledge"}
-                  </button>
+                      }
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: "100%",
+                        padding: "12px 24px",
+                        marginTop: "16px",
+                        fontSize: "14px",
+                        fontWeight: "600",
+                        letterSpacing: "0.03em",
+                        border: "2px solid rgba(255, 215, 64, 0.7)",
+                        borderRadius: "999px",
+                        background:
+                          "linear-gradient(135deg, rgba(255, 215, 64, 0.95), rgba(255, 170, 51, 0.85))",
+                        color: "#1b1300",
+                        cursor:
+                          isSigningPending || isWaitingForTx || isSimulating
+                            ? "not-allowed"
+                            : "pointer",
+                        opacity:
+                          isSigningPending || isWaitingForTx || isSimulating
+                            ? 0.6
+                            : 1,
+                        transition:
+                          "transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease, opacity 0.2s ease",
+                        textDecoration: "none",
+                      }}
+                    >
+                      {isSimulating
+                        ? "Checking transaction..."
+                        : isWaitingForTx
+                        ? "Confirming pledge..."
+                        : isSigningPending
+                        ? "Waiting for wallet..."
+                        : "Sign the Trustless Manifesto Pledge"}
+                    </button>
+                    <p
+                      style={{
+                        fontSize: "11px",
+                        color: "rgba(200, 200, 200, 0.6)",
+                        marginTop: "8px",
+                        textAlign: "center",
+                      }}
+                    >
+                      Make sure you have enough Mainnet ETH
+                    </p>
+                  </div>
                 )}
               </div>
               {simulationError && (
@@ -867,7 +881,13 @@ function TrustlessManifestoTabContent() {
                 <div className="mt-4 text-sm">
                   {isWaitingForTx ? (
                     <div style={{ color: "rgb(100, 200, 100)" }}>
-                      <p style={{ fontSize: "14px", fontWeight: "500", marginBottom: "4px" }}>
+                      <p
+                        style={{
+                          fontSize: "14px",
+                          fontWeight: "500",
+                          marginBottom: "4px",
+                        }}
+                      >
                         Transaction submitted!
                       </p>
                       <a
@@ -882,14 +902,36 @@ function TrustlessManifestoTabContent() {
                     </div>
                   ) : (
                     <div style={{ color: "rgb(195, 165, 84)" }}>
-                      <div style={{ display: "flex", alignItems: "flex-start", gap: "8px", marginBottom: "8px" }}>
-                        <span style={{ fontSize: "18px", flexShrink: 0 }}>✓</span>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "flex-start",
+                          gap: "8px",
+                          marginBottom: "8px",
+                        }}
+                      >
+                        <span style={{ fontSize: "18px", flexShrink: 0 }}>
+                          ✓
+                        </span>
                         <div>
-                          <p style={{ fontSize: "15px", fontWeight: "600", marginBottom: "4px" }}>
+                          <p
+                            style={{
+                              fontSize: "15px",
+                              fontWeight: "600",
+                              marginBottom: "4px",
+                            }}
+                          >
                             Your pledge is now part of Ethereum mainnet.
                           </p>
-                          <p style={{ fontSize: "13px", fontStyle: "italic", opacity: 0.9 }}>
-                            You have joined the trustless movement — permanently and publicly.
+                          <p
+                            style={{
+                              fontSize: "13px",
+                              fontStyle: "italic",
+                              opacity: 0.9,
+                            }}
+                          >
+                            You have joined the trustless movement — permanently
+                            and publicly.
                           </p>
                         </div>
                       </div>
