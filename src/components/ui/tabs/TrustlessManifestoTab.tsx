@@ -71,6 +71,7 @@ function TrustlessManifestoTabContent() {
   } = useWriteContract();
   const [simulationError, setSimulationError] = useState<string | null>(null);
   const [isSimulating, setIsSimulating] = useState(false);
+  const [isSharePending, setIsSharePending] = useState(false);
 
   const { isLoading: isWaitingForTx } = useWaitForTransactionReceipt({
     hash: txHash,
@@ -736,14 +737,21 @@ function TrustlessManifestoTabContent() {
                 .
               </p>
               <div className="mt-6">
-                {txHash || true ? (
-                  // Share button (showing now for debugging)
+                {txHash && !isWaitingForTx ? (
+                  // Share button (only after transaction completes)
                   <button
                     onClick={async () => {
                       try {
+                        setIsSharePending(true);
                         const fid = context?.user?.fid;
-                        const baseUrl = process.env.NEXT_PUBLIC_URL || typeof window !== 'undefined' ? window.location.origin : '';
-                        const shareUrl = fid ? `${baseUrl}/share/${fid}` : baseUrl;
+                        const baseUrl =
+                          process.env.NEXT_PUBLIC_URL ||
+                          typeof window !== "undefined"
+                            ? window.location.origin
+                            : "";
+                        const shareUrl = fid
+                          ? `${baseUrl}/share/${fid}`
+                          : baseUrl;
 
                         await sdk.actions.composeCast({
                           text: "Signed the trustless manifesto!",
@@ -751,8 +759,11 @@ function TrustlessManifestoTabContent() {
                         });
                       } catch (error) {
                         console.error("Failed to open compose:", error);
+                      } finally {
+                        setIsSharePending(false);
                       }
                     }}
+                    disabled={isSharePending}
                     style={{
                       display: "inline-flex",
                       alignItems: "center",
@@ -768,19 +779,22 @@ function TrustlessManifestoTabContent() {
                       background:
                         "linear-gradient(135deg, rgba(100, 200, 255, 0.95), rgba(51, 170, 255, 0.85))",
                       color: "#001a33",
-                      cursor: "pointer",
+                      cursor: isSharePending ? "not-allowed" : "pointer",
+                      opacity: isSharePending ? 0.6 : 1,
                       transition:
-                        "transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease",
+                        "transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease, opacity 0.2s ease",
                       textDecoration: "none",
                     }}
                   >
-                    Share Your Signature
+                    {isSharePending ? "Opening cast composer..." : "Share Your Pledge"}
                   </button>
                 ) : (
                   // Sign button
                   <button
                     onClick={handleSign}
-                    disabled={isSigningPending || isWaitingForTx || isSimulating}
+                    disabled={
+                      isSigningPending || isWaitingForTx || isSimulating
+                    }
                     style={{
                       display: "inline-flex",
                       alignItems: "center",
@@ -812,7 +826,9 @@ function TrustlessManifestoTabContent() {
                     {isSimulating
                       ? "Checking transaction..."
                       : isWaitingForTx
-                      ? "Signing..."
+                      ? "Confirming pledge..."
+                      : isSigningPending
+                      ? "Waiting for wallet..."
                       : "Sign the Trustless Manifesto Pledge"}
                   </button>
                 )}
@@ -826,7 +842,7 @@ function TrustlessManifestoTabContent() {
               {isSignError && renderError(signError)}
               {txHash && (
                 <div className="mt-4 text-sm text-green-400">
-                  <p>Transaction submitted!</p>
+                  <p>{isWaitingForTx ? "Transaction submitted!" : "Transaction confirmed! ✓"}</p>
                   <a
                     href={`https://etherscan.io/tx/${txHash}`}
                     target="_blank"
