@@ -8,6 +8,7 @@ import {
   useWriteContract,
   useWaitForTransactionReceipt,
   useSwitchChain,
+  useReadContract,
 } from "wagmi";
 import { mainnet } from "wagmi/chains";
 import { config } from "../../providers/WagmiProvider";
@@ -75,6 +76,19 @@ function TrustlessManifestoTabContent() {
 
   const { isLoading: isWaitingForTx } = useWaitForTransactionReceipt({
     hash: txHash,
+  });
+
+  // Check if the current address has already pledged
+  const { data: hasPledged } = useReadContract({
+    address: MANIFESTO_CONTRACT_ADDRESS,
+    abi: MANIFESTO_ABI,
+    functionName: "has_pledged",
+    args: address ? [address] : undefined,
+    chainId: mainnet.id,
+    query: {
+      enabled: !!address,
+      refetchInterval: 3000, // Refetch every 3 seconds to catch new pledges
+    },
   });
 
   // --- Handlers ---
@@ -737,8 +751,8 @@ function TrustlessManifestoTabContent() {
                 .
               </p>
               <div className="mt-6">
-                {txHash && !isWaitingForTx ? (
-                  // Share button (only after transaction completes)
+                {(txHash && !isWaitingForTx) || hasPledged ? (
+                  // Share button (only after transaction completes or already pledged)
                   <button
                     onClick={async () => {
                       try {
