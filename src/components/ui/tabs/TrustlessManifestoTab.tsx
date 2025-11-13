@@ -12,6 +12,7 @@ import { mainnet } from "wagmi/chains";
 import { config } from "../../providers/WagmiProvider";
 import { renderError } from "../../../lib/errorUtils";
 import { createPublicClient, http } from "viem";
+import { sdk } from "@farcaster/miniapp-sdk";
 
 // Trustless Manifesto contract ABI
 const MANIFESTO_ABI = [
@@ -35,17 +36,26 @@ const MANIFESTO_CONTRACT_ADDRESS =
   "0x32AA964746ba2be65C71fe4A5cB3c4a023cA3e20" as const;
 
 /**
- * HomeTab component displays The Trustless Manifesto content.
+ * TrustlessManifestoTab component displays The Trustless Manifesto content.
  *
  * This component displays the full manifesto text and provides
  * a button for users to sign the manifesto on Ethereum mainnet.
  *
  * @example
  * ```tsx
- * <HomeTab />
+ * <TrustlessManifestoTab />
  * ```
  */
+export function TrustlessManifestoTab() {
+  // Legacy alias for backwards compatibility
+  return TrustlessManifestoTabContent();
+}
+
 export function HomeTab() {
+  return TrustlessManifestoTabContent();
+}
+
+function TrustlessManifestoTabContent() {
   // --- Hooks ---
   const { isConnected, chainId, address } = useAccount();
   const { connectAsync } = useConnect();
@@ -197,6 +207,7 @@ export function HomeTab() {
               >
                 trustlessness.eth.limo
               </a>
+              .
             </em>
           </p>
         </div>
@@ -723,43 +734,81 @@ export function HomeTab() {
                 .
               </p>
               <div className="mt-6">
-                <button
-                  onClick={handleSign}
-                  disabled={isSigningPending || isWaitingForTx || isSimulating}
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    width: "100%",
-                    padding: "12px 24px",
-                    marginTop: "16px",
-                    fontSize: "14px",
-                    fontWeight: "600",
-                    letterSpacing: "0.03em",
-                    border: "2px solid rgba(255, 215, 64, 0.7)",
-                    borderRadius: "999px",
-                    background:
-                      "linear-gradient(135deg, rgba(255, 215, 64, 0.95), rgba(255, 170, 51, 0.85))",
-                    color: "#1b1300",
-                    cursor:
-                      isSigningPending || isWaitingForTx || isSimulating
-                        ? "not-allowed"
-                        : "pointer",
-                    opacity:
-                      isSigningPending || isWaitingForTx || isSimulating
-                        ? 0.6
-                        : 1,
-                    transition:
-                      "transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease, opacity 0.2s ease",
-                    textDecoration: "none",
-                  }}
-                >
-                  {isSimulating
-                    ? "Checking transaction..."
-                    : isWaitingForTx
-                    ? "Signing..."
-                    : "Sign the Trustless Manifesto Pledge"}
-                </button>
+                {txHash || true ? (
+                  // Share button (showing now for debugging)
+                  <button
+                    onClick={async () => {
+                      try {
+                        await sdk.actions.composeCast({
+                          text: "Signed the trustless manifesto!",
+                        });
+                      } catch (error) {
+                        console.error("Failed to open compose:", error);
+                      }
+                    }}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      width: "100%",
+                      padding: "12px 24px",
+                      marginTop: "16px",
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      letterSpacing: "0.03em",
+                      border: "2px solid rgba(100, 200, 255, 0.7)",
+                      borderRadius: "999px",
+                      background:
+                        "linear-gradient(135deg, rgba(100, 200, 255, 0.95), rgba(51, 170, 255, 0.85))",
+                      color: "#001a33",
+                      cursor: "pointer",
+                      transition:
+                        "transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease",
+                      textDecoration: "none",
+                    }}
+                  >
+                    Share Your Signature
+                  </button>
+                ) : (
+                  // Sign button
+                  <button
+                    onClick={handleSign}
+                    disabled={isSigningPending || isWaitingForTx || isSimulating}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      width: "100%",
+                      padding: "12px 24px",
+                      marginTop: "16px",
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      letterSpacing: "0.03em",
+                      border: "2px solid rgba(255, 215, 64, 0.7)",
+                      borderRadius: "999px",
+                      background:
+                        "linear-gradient(135deg, rgba(255, 215, 64, 0.95), rgba(255, 170, 51, 0.85))",
+                      color: "#1b1300",
+                      cursor:
+                        isSigningPending || isWaitingForTx || isSimulating
+                          ? "not-allowed"
+                          : "pointer",
+                      opacity:
+                        isSigningPending || isWaitingForTx || isSimulating
+                          ? 0.6
+                          : 1,
+                      transition:
+                        "transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease, opacity 0.2s ease",
+                      textDecoration: "none",
+                    }}
+                  >
+                    {isSimulating
+                      ? "Checking transaction..."
+                      : isWaitingForTx
+                      ? "Signing..."
+                      : "Sign the Trustless Manifesto Pledge"}
+                  </button>
+                )}
               </div>
               {simulationError && (
                 <div className="mt-4 text-sm text-red-400 bg-red-900/20 p-3 rounded">

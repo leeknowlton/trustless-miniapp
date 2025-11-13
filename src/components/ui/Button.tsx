@@ -1,24 +1,25 @@
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
   isLoading?: boolean;
-  variant?: 'primary' | 'secondary' | 'outline';
+  variant?: 'primary' | 'secondary' | 'outline' | 'gold';
   size?: 'sm' | 'md' | 'lg';
 }
 
-export function Button({ 
-  children, 
-  className = "", 
-  isLoading = false, 
+export function Button({
+  children,
+  className = "",
+  isLoading = false,
   variant = 'primary',
   size = 'md',
-  ...props 
+  ...props
 }: ButtonProps) {
   const baseClasses = "btn";
-  
+
   const variantClasses = {
     primary: "btn-primary",
-    secondary: "btn-secondary", 
-    outline: "btn-outline"
+    secondary: "btn-secondary",
+    outline: "btn-outline",
+    gold: "btn-gold"
   };
   
   const sizeClasses = {
