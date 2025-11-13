@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
 
   if (requestBody.success === false) {
     return Response.json(
-      { success: false, errors: requestBody.error.errors },
+      { success: false, errors: requestBody.error.issues },
       { status: 400 }
     );
   }
@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
   if (!neynarEnabled) {
     await setUserNotificationDetails(
       Number(requestBody.data.fid),
-      requestBody.data.notificationDetails
+      requestBody.data.notificationDetails as { url: string; token: string }
     );
   }
 

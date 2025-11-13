@@ -1,5 +1,11 @@
 import React from "react";
-import { Tab } from "~/components/App";
+
+enum Tab {
+  Home = "home",
+  Actions = "actions",
+  Context = "context",
+  Wallet = "wallet",
+}
 
 interface FooterProps {
   activeTab: Tab;
