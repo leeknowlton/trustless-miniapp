@@ -15,8 +15,8 @@ export async function GET() {
           justifyContent: "center",
           alignItems: "center",
           padding: "60px",
-          fontFamily: "system-ui, -apple-system, sans-serif",
           position: "relative",
+          fontFamily: "system-ui, -apple-system, sans-serif",
           overflow: "hidden",
         }}
       >
@@ -33,7 +33,7 @@ export async function GET() {
             alignItems: "center",
             justifyContent: "center",
             padding: "40px",
-            opacity: 0.04,
+            opacity: 0.06,
             fontSize: "24px",
             color: "rgb(238, 238, 238)",
             lineHeight: "2.2",
@@ -42,8 +42,12 @@ export async function GET() {
             zIndex: 0,
           }}
         >
-          <div>We choose to build trustless systems even when it is harder.</div>
-          <div>We pay the cost of openness over the convenience of control.</div>
+          <div>
+            We choose to build trustless systems even when it is harder.
+          </div>
+          <div>
+            We pay the cost of openness over the convenience of control.
+          </div>
           <div>
             We do not outsource neutrality to anyone who can be bribed, coerced,
             or shut down.
@@ -76,41 +80,53 @@ export async function GET() {
           <div>It needs fewer reasons to trust them.</div>
         </div>
 
-        {/* Main Title */}
+        {/* Top text: "I signed the" */}
         <div
           style={{
-            fontSize: "120px",
+            position: "absolute",
+            top: "200px",
+            fontSize: "48px",
+            color: "rgb(238, 238, 238)",
+            fontWeight: "400",
+            letterSpacing: "0.02em",
+            display: "flex",
+            zIndex: 1,
+          }}
+        >
+          I signed the
+        </div>
+
+        {/* Middle text: "The Trustlessness Manifesto" */}
+        <div
+          style={{
+            fontSize: "72px",
             fontWeight: "700",
             color: "rgb(238, 238, 238)",
             textAlign: "center",
-            lineHeight: "1.1",
-            marginBottom: "60px",
+            lineHeight: "1.2",
+            marginBottom: "30px",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
             zIndex: 1,
           }}
         >
-          <div>The Trustless</div>
-          <div>Manifesto</div>
+          <div>The Trustless Manifesto Pledge</div>
         </div>
 
-        {/* Authors */}
+        {/* Bottom text: Authors names */}
         <div
           style={{
-            fontSize: "32px",
+            fontSize: "36px",
             color: "rgb(195, 165, 84)",
             textAlign: "center",
+            marginTop: "20px",
             fontWeight: "500",
             display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
             zIndex: 1,
           }}
         >
-          <div>Yoav Weiss</div>
-          <div>Vitalik Buterin</div>
-          <div>Marissa Posner</div>
+          Authored by Yoav Weiss, Vitalik Buterin, Marissa Posner
         </div>
       </div>
     ),

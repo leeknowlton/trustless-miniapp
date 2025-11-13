@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import { useMiniApp } from "@neynar/react";
 import {
   useAccount,
   useConnect,
@@ -57,6 +58,7 @@ export function HomeTab() {
 
 function TrustlessManifestoTabContent() {
   // --- Hooks ---
+  const { context } = useMiniApp();
   const { isConnected, chainId, address } = useAccount();
   const { connectAsync } = useConnect();
   const { switchChainAsync } = useSwitchChain();
@@ -739,8 +741,13 @@ function TrustlessManifestoTabContent() {
                   <button
                     onClick={async () => {
                       try {
+                        const fid = context?.user?.fid;
+                        const baseUrl = process.env.NEXT_PUBLIC_URL || typeof window !== 'undefined' ? window.location.origin : '';
+                        const shareUrl = fid ? `${baseUrl}/share/${fid}` : baseUrl;
+
                         await sdk.actions.composeCast({
                           text: "Signed the trustless manifesto!",
+                          embeds: [shareUrl],
                         });
                       } catch (error) {
                         console.error("Failed to open compose:", error);
