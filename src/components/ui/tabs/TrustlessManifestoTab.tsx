@@ -864,16 +864,46 @@ function TrustlessManifestoTabContent() {
               )}
               {isSignError && renderError(signError)}
               {txHash && (
-                <div className="mt-4 text-sm text-green-400">
-                  <p>{isWaitingForTx ? "Transaction submitted!" : "Transaction confirmed! ✓"}</p>
-                  <a
-                    href={`https://etherscan.io/tx/${txHash}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="underline hover:no-underline"
-                  >
-                    View on Etherscan
-                  </a>
+                <div className="mt-4 text-sm">
+                  {isWaitingForTx ? (
+                    <div style={{ color: "rgb(100, 200, 100)" }}>
+                      <p style={{ fontSize: "14px", fontWeight: "500", marginBottom: "4px" }}>
+                        Transaction submitted!
+                      </p>
+                      <a
+                        href={`https://etherscan.io/tx/${txHash}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline hover:no-underline"
+                        style={{ color: "rgb(100, 200, 100)" }}
+                      >
+                        View on Etherscan
+                      </a>
+                    </div>
+                  ) : (
+                    <div style={{ color: "rgb(195, 165, 84)" }}>
+                      <div style={{ display: "flex", alignItems: "flex-start", gap: "8px", marginBottom: "8px" }}>
+                        <span style={{ fontSize: "18px", flexShrink: 0 }}>✓</span>
+                        <div>
+                          <p style={{ fontSize: "15px", fontWeight: "600", marginBottom: "4px" }}>
+                            Your pledge is now part of Ethereum mainnet.
+                          </p>
+                          <p style={{ fontSize: "13px", fontStyle: "italic", opacity: 0.9 }}>
+                            You have joined the trustless movement — permanently and publicly.
+                          </p>
+                        </div>
+                      </div>
+                      <a
+                        href={`https://etherscan.io/tx/${txHash}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline hover:no-underline"
+                        style={{ color: "rgb(195, 165, 84)", fontSize: "13px" }}
+                      >
+                        View on Etherscan
+                      </a>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
