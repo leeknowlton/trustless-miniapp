@@ -72,8 +72,13 @@ export const APP_SPLASH_BACKGROUND_COLOR: string = "#1C1C1C";
  * Used to associate the mini app with a Farcaster account.
  * If not provided, the mini app will be unsigned and have limited capabilities.
  */
-export const APP_ACCOUNT_ASSOCIATION: AccountAssociation | undefined =
-  undefined;
+export const APP_ACCOUNT_ASSOCIATION: AccountAssociation | undefined = {
+  header:
+    "eyJmaWQiOjQ0NjY5NywidHlwZSI6ImF1dGgiLCJrZXkiOiIweDkwMTI1RjllNTE1NWY0OTY1QTI0MjlEOWE0YjQwMjgzMzQxRDVCYTIifQ",
+  payload: "eyJkb21haW4iOiJ0cnVzdGxlc3MtbWluaWFwcC52ZXJjZWwuYXBwIn0",
+  signature:
+    "UhdLP3V9ancPH762MJcOtniBMzHf3KB1JD639svXwLp2YNp49pvb4FSjFlpXmehNSUf8vpW7ecNEfjb2ROFxjhw=",
+};
 
 // --- UI Configuration ---
 /**
