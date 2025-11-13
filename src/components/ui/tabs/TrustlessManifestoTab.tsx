@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { useMiniApp } from "@neynar/react";
 import {
   useAccount,
@@ -73,10 +73,19 @@ function TrustlessManifestoTabContent() {
   const [simulationError, setSimulationError] = useState<string | null>(null);
   const [isSimulating, setIsSimulating] = useState(false);
   const [isSharePending, setIsSharePending] = useState(false);
+  const [showShareButton, setShowShareButton] = useState(false);
 
   const { isLoading: isWaitingForTx } = useWaitForTransactionReceipt({
     hash: txHash,
   });
+
+  // Show share button after a short delay when transaction is submitted
+  useEffect(() => {
+    if (txHash && !showShareButton) {
+      const timer = setTimeout(() => setShowShareButton(true), 800);
+      return () => clearTimeout(timer);
+    }
+  }, [txHash, showShareButton]);
 
   // Check if the current address has already pledged
   const { data: hasPledged } = useReadContract({
@@ -751,8 +760,8 @@ function TrustlessManifestoTabContent() {
                 .
               </p>
               <div className="mt-6">
-                {(txHash && !isWaitingForTx) || hasPledged ? (
-                  // Share button (only after transaction completes or already pledged)
+                {showShareButton || hasPledged ? (
+                  // Share button (after transaction submitted with delay or already pledged)
                   <button
                     onClick={async () => {
                       try {
