@@ -13,7 +13,6 @@ import {
 import { mainnet } from "wagmi/chains";
 import { config } from "../../providers/WagmiProvider";
 import { renderError } from "../../../lib/errorUtils";
-import { createPublicClient, http } from "viem";
 import { sdk } from "@farcaster/miniapp-sdk";
 
 // Trustless Manifesto contract ABI
@@ -70,8 +69,6 @@ function TrustlessManifestoTabContent() {
     error: signError,
     isError: isSignError,
   } = useWriteContract();
-  const [simulationError, setSimulationError] = useState<string | null>(null);
-  const [isSimulating, setIsSimulating] = useState(false);
   const [isSharePending, setIsSharePending] = useState(false);
   const [showShareButton, setShowShareButton] = useState(false);
 
@@ -101,45 +98,8 @@ function TrustlessManifestoTabContent() {
   });
 
   // --- Handlers ---
-  const simulateTransaction = useCallback(async () => {
-    if (!address) return false;
-
-    try {
-      setIsSimulating(true);
-      setSimulationError(null);
-
-      // Create a public client for the mainnet
-      const client = createPublicClient({
-        chain: mainnet,
-        transport: http(),
-      });
-
-      // Simulate the contract call
-      await client.simulateContract({
-        account: address,
-        address: MANIFESTO_CONTRACT_ADDRESS,
-        abi: MANIFESTO_ABI,
-        functionName: "pledge",
-      });
-
-      setIsSimulating(false);
-      return true;
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "Unknown error during simulation";
-      setSimulationError(errorMessage);
-      setIsSimulating(false);
-      console.error("Simulation error:", error);
-      return false;
-    }
-  }, [address]);
-
   const handleSign = useCallback(async () => {
     try {
-      setSimulationError(null);
-
       // Only connect if not already connected
       if (!isConnected) {
         await connectAsync({
@@ -154,21 +114,12 @@ function TrustlessManifestoTabContent() {
           await switchChainAsync({ chainId: mainnet.id });
         } catch (switchError) {
           console.error("Chain switch failed:", switchError);
-          setSimulationError(
-            "Failed to switch to Ethereum mainnet. Please switch chains manually in your wallet."
-          );
           return;
         }
       }
 
       // Add a small delay to ensure chain switch is propagated
       await new Promise((resolve) => setTimeout(resolve, 500));
-
-      // Run pre-flight simulation
-      const simulationPassed = await simulateTransaction();
-      if (!simulationPassed) {
-        return;
-      }
 
       // Call the pledge function
       writeContract({
@@ -181,7 +132,6 @@ function TrustlessManifestoTabContent() {
       const errorMessage =
         error instanceof Error ? error.message : "Unknown error";
       if (!errorMessage.includes("already connected")) {
-        setSimulationError(errorMessage);
         console.error("Error:", error);
       }
     }
@@ -190,7 +140,6 @@ function TrustlessManifestoTabContent() {
     chainId,
     connectAsync,
     switchChainAsync,
-    simulateTransaction,
     writeContract,
   ]);
 
@@ -819,7 +768,7 @@ function TrustlessManifestoTabContent() {
                     <button
                       onClick={handleSign}
                       disabled={
-                        isSigningPending || isWaitingForTx || isSimulating
+                        isSigningPending || isWaitingForTx
                       }
                       style={{
                         display: "inline-flex",
@@ -837,11 +786,11 @@ function TrustlessManifestoTabContent() {
                           "linear-gradient(135deg, rgba(255, 215, 64, 0.95), rgba(255, 170, 51, 0.85))",
                         color: "#1b1300",
                         cursor:
-                          isSigningPending || isWaitingForTx || isSimulating
+                          isSigningPending || isWaitingForTx
                             ? "not-allowed"
                             : "pointer",
                         opacity:
-                          isSigningPending || isWaitingForTx || isSimulating
+                          isSigningPending || isWaitingForTx
                             ? 0.6
                             : 1,
                         transition:
@@ -849,9 +798,7 @@ function TrustlessManifestoTabContent() {
                         textDecoration: "none",
                       }}
                     >
-                      {isSimulating
-                        ? "Checking transaction..."
-                        : isWaitingForTx
+                      {isWaitingForTx
                         ? "Confirming pledge..."
                         : isSigningPending
                         ? "Waiting for wallet..."
@@ -870,12 +817,6 @@ function TrustlessManifestoTabContent() {
                   </div>
                 )}
               </div>
-              {simulationError && (
-                <div className="mt-4 text-sm text-red-400 bg-red-900/20 p-3 rounded">
-                  <p className="font-semibold">Transaction would fail:</p>
-                  <p className="text-xs mt-1 break-words">{simulationError}</p>
-                </div>
-              )}
               {isSignError && renderError(signError)}
               {txHash && (
                 <div className="mt-4 text-sm">
